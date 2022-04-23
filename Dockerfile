@@ -16,6 +16,9 @@ COPY log.sh /home/steam/log.sh
 RUN mkdir /ark && \
     chown -R steam:steam /home/steam/ /ark
 
+COPY Game.ini /ark/config/Game.ini
+COPY GameUserSettings.ini /ark/config/GameUserSettings.ini
+
 RUN echo "%sudo   ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers && \
     usermod -a -G sudo steam && \
     touch /home/steam/.sudo_as_admin_successful
@@ -23,14 +26,14 @@ RUN echo "%sudo   ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers && \
 WORKDIR /home/steam
 USER steam
 
-ENV am_ark_SessionName="Ark Server" \
-    am_serverMap="TheIsland" \
-    am_ark_ServerAdminPassword="k3yb04rdc4t" \
-    am_ark_MaxPlayers=70 \
-    am_ark_QueryPort=27015 \
-    am_ark_Port=7778 \
-    am_ark_RCONPort=32330 \
-    am_arkwarnminutes=15
+
+
+EXPOSE 7777/tcp
+EXPOSE 7777/udp
+EXPOSE 7778/tcp
+EXPOSE 7778/udp
+EXPOSE 27015/tcp
+EXPOSE 27015/udp
 
 VOLUME /ark
 
