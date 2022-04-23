@@ -12,16 +12,18 @@ COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
 COPY arkmanager/instance.cfg /etc/arkmanager/instances/main.cfg
 COPY run.sh /home/steam/run.sh
 COPY log.sh /home/steam/log.sh
+COPY Game.ini /tmp/Game.ini
+COPY GameUserSettings.ini /tmp/GameUserSettings.ini
 
 RUN mkdir /ark && \
     chown -R steam:steam /home/steam/ /ark
 
-COPY Game.ini /ark/config/Game.ini
-COPY GameUserSettings.ini /ark/config/GameUserSettings.ini
 
 RUN echo "%sudo   ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers && \
     usermod -a -G sudo steam && \
     touch /home/steam/.sudo_as_admin_successful
+
+RUN chown steam /tmp
 
 WORKDIR /home/steam
 USER steam
@@ -36,5 +38,6 @@ EXPOSE 27015/tcp
 EXPOSE 27015/udp
 
 VOLUME /ark
+
 
 CMD [ "./run.sh" ]
