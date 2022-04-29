@@ -1,0 +1,14 @@
+---
+services:
+  ark_server:
+    build: .
+    ports:
+      - "7777:7777"
+      - "7778:7778"
+      - "27015:27015"
+    env_file: ./default.env
+    volumes:
+      - steam:/home/steam/Steam
+      - ark:/ark
+    restart: always
+    mem_limit: 1500m

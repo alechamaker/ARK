@@ -40,4 +40,4 @@ EXPOSE 27015/udp
 VOLUME /ark
 
 
-CMD [ "./run.sh" ]
+ENTRYPOINT [ "./run.sh" ]
