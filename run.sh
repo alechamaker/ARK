@@ -97,7 +97,7 @@ echo "Contents of Game.ini..."
 cat /ark/server/ShooterGame/Saved/Config/LinuxServer/Game.ini
 [ -f /ark/config/GameUserSettings.ini ] && ln -sf /ark/config/GameUserSettings.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
 echo "Contents of GameUserSettings.ini"
-cat /ark/server/ShooterGame/Saved/Config/LinuxServer/GamerUserSetting.ini
+cat /ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
 
 if [[ "$VALIDATE_SAVE_EXISTS" = true && ! -z "$am_ark_AltSaveDirectoryName" && ! -z "$am_serverMap" ]]; then
 	savepath="/ark/server/ShooterGame/Saved/$am_ark_AltSaveDirectoryName"
