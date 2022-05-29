@@ -7,8 +7,14 @@ REPODIR="$(dirname "$SCRIPTDIR")"
 set -eo pipefail
 
 echo "###########################################################################"
-echo "# Ark Server - " `date`
+echo "#                      _                       _                          #"
+echo "#                _   _| |__  _   _ _ __  _ __ (_) ___ ____                #"
+echo "#               | | | | '_ \| | | | '_ \| '_ \| |/ _ \_  /                #"
+echo "#               | |_| | |_) | |_| | | | | | | | |  __// /                 #"
+echo "#                \__, |_.__/ \__,_|_| |_|_| |_|_|\___/___|                #"
+echo "#                |___/                                                    #"
 echo "###########################################################################"
+echo `date`
 
 echo "Ensuring correct permissions..."
 sudo find /ark -not -user steam -o -not -group steam -exec chown -v steam:steam {} \; 
@@ -49,10 +55,9 @@ if [ ! -d /ark/server ] || [ ! -f /ark/server/ShooterGame/Binaries/Linux/Shooter
 	mkdir -p /ark/server/ShooterGame/Binaries/Linux/
 fi
 
-if [ ! -f /ark/config/crontab ]; then
-	echo "Creating crontab..."
-	cat << EOF >> /ark/config/crontab
-# Example of job definition:
+#if [ ! -f /ark/config/crontab ]; then
+echo "Creating crontab..."
+echo "# Example of job definition:
 # .---------------- minute (0 - 59)
 # |  .------------- hour (0 - 23)
 # |  |  .---------- day of month (1 - 31)
@@ -66,12 +71,9 @@ if [ ! -f /ark/config/crontab ]; then
 # */15 * * * * arkmanager backup			# backup every 15min
 # 0 0 * * * arkmanager backup				# backup every day at midnight
 
-*/30 * * * * arkmanager update --update-mods --warn --saveworld
+# */30 * * * * arkmanager update --update-mods --warn --saveworld
 10 */8 * * * arkmanager saveworld && arkmanager backup
-15 10 * * * arkmanager restart --warn --saveworld
-
-EOF
-fi
+# 15 10 * * * arkmanager restart --warn --saveworld" > /ark/config/crontab
 
 # If there is uncommented line in the file
 CRONNUMBER=`grep -v "^#" /ark/config/crontab | wc -l`
@@ -89,15 +91,15 @@ fi
 mv /tmp/Game.ini /ark/config/Game.ini
 mv /tmp/GameUserSettings.ini /ark/config/GameUserSettings.ini
 
+if [ $? -eq 0 ]; then
+    echo "Game configs found!"
+fi
+
 # Create symlinks for configs
 [ -f /ark/config/AllowedCheaterSteamIDs.txt ] && ln -sf /ark/config/AllowedCheaterSteamIDs.txt /ark/server/ShooterGame/Saved/AllowedCheaterSteamIDs.txt
 [ -f /ark/config/Engine.ini ] && ln -sf /ark/config/Engine.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Engine.ini
 [ -f /ark/config/Game.ini ] && ln -sf /ark/config/Game.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/Game.ini
-echo "Contents of Game.ini..."
-cat /ark/server/ShooterGame/Saved/Config/LinuxServer/Game.ini
 [ -f /ark/config/GameUserSettings.ini ] && ln -sf /ark/config/GameUserSettings.ini /ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
-echo "Contents of GameUserSettings.ini"
-cat /ark/server/ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini
 
 if [[ "$VALIDATE_SAVE_EXISTS" = true && ! -z "$am_ark_AltSaveDirectoryName" && ! -z "$am_serverMap" ]]; then
 	savepath="/ark/server/ShooterGame/Saved/$am_ark_AltSaveDirectoryName"
@@ -142,6 +144,9 @@ trap stop TERM
 # to allow server logs to be scraped from RCON to stdout
 # bash -c ./log.sh &
 
-arkmanager start --no-background --verbose &
-arkmanpid=$!
-wait $arkmanpid
+
+echo "Starting ark server.."
+arkmanager run
+# arkmanager update --update-mods &
+# arkmanpid=$!
+# wait $arkmanpid
